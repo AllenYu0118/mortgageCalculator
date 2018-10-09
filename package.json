@@ -1,0 +1,15 @@
+{
+  "name": "mortgagecalculator",
+  "version": "1.0.0",
+  "description": "應用于台灣房貸市場的房貸試算工具",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "mortgage",
+    "calculator"
+  ],
+  "author": "yuxiaolei",
+  "license": "ISC"
+}
