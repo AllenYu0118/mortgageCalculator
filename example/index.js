@@ -27,9 +27,15 @@ new Vue({
             })
             let calculator = new MortgageCalculator(params)
 
-            console.table(calculator.base())
-            console.table(calculator.interestPerMonthList())
-            console.table(calculator.interestPerMonthList())
+            if (this.rateType === 1) {
+                console.table('单一利率计算结果', calculator.base())
+                console.table('单一利率本息每月明细', calculator.interestPerMonthList())
+                console.table('单一利率本金每月明细', calculator.interestPerMonthList())
+            } else {
+                console.table('多段利率本息计算结果', calculator.interestMulti())
+                console.table('多段利率本金计算结果', calculator.capitalMulti())
+            }
+
         },
 
         reverseMonth (month) {
