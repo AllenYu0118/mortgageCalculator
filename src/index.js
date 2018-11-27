@@ -183,6 +183,9 @@ class MortgageCalculator {
         let monthList = [] // 还款明细
 
         that.params.segment.forEach((item, key) => {
+            // 任何一個值為空,就返回
+            if (!item.start || !item.end || !item.rate) return false
+
             // 参数配置
             let options = {
                 rate: item.rate,
@@ -243,6 +246,9 @@ class MortgageCalculator {
         let monthList = [] // 还款明细
 
         this.params.segment.forEach((item, key) => {
+            // 任何一個值為空,就返回
+            if (!item.start || !item.end || !item.rate) return false
+            
             // 参数配置
             let options = {
                 rate: item.rate,
