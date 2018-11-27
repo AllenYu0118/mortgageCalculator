@@ -202,7 +202,7 @@ class MortgageCalculator {
             let result = that.base(options)
 
             // 循环计算出某一段内所付的本金之和
-            for (let i = item.start; i <= item.end; i++) {
+            for (let i = ~~item.start; i <= ~~item.end; i++) {
                 let perMonthInterest = result.monthRate * (that.params.price - totalCapital) // 每月利息
                 let perMonthCapital = result.perMonthPrice - perMonthInterest // 每月本金
 
@@ -253,7 +253,7 @@ class MortgageCalculator {
             let result = that.base(options)
 
             // 循环计算出某一段内所付的本金之和
-            for (let i = item.start; i <= item.end; i++) {
+            for (let i = ~~item.start; i <= ~~item.end; i++) {
                 let perMonthInterest = result.monthRate * (that.params.price - totalCapital) // 每月利息
                 let perMonthCapital = result.perMonthCapital // 每月本金
 
