@@ -22,7 +22,7 @@
  * @description 站內參考 https://www.591.com.tw/housing-fdss.html
  * @date 更新时间 2018-10-10 16:26:19
  */
-class MortgageCalculator {
+export default class MortgageCalculator {
     constructor (params) {
         let settings = {
             price: 1000 * 10000, // 默認 1000 萬
@@ -248,7 +248,7 @@ class MortgageCalculator {
         this.params.segment.forEach((item, key) => {
             // 任何一個值為空,就返回
             if (!item.start || !item.end || !item.rate) return false
-            
+
             // 参数配置
             let options = {
                 rate: item.rate,
