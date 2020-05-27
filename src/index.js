@@ -23,14 +23,14 @@
  * @date 更新时间 2018-10-10 16:26:19
  */
 export default class MortgageCalculator {
-    constructor (params) {
+    constructor(params) {
         let settings = {
             price: 1000 * 10000, // 默認 1000 萬
             month: 360,
-            type: 1,
-            graceMonth: 0,
-            rate: 1.2,
-            segment: [
+            type: 1, // 贷款方式
+            graceMonth: 0, // 宽限期
+            rate: 1.2, // 单一利率
+            segment: [ // 多段利率
                 { start: 1, end: 12, rate: 1.3 },
                 { start: 13, end: 24, rate: 1.4 },
                 { start: 25, end: 360, rate: 1.5 }
@@ -40,7 +40,7 @@ export default class MortgageCalculator {
     }
 
     // 基本方法, 单一利率获取计算结果, type = 2 可获取本金均摊计算结果
-    base (params) {
+    base(params) {
         let { price, month, type, graceMonth, rate } = Object.assign({}, this.params, params)
 
         // 月利率
@@ -111,7 +111,7 @@ export default class MortgageCalculator {
     }
 
     // 本息均摊 - 单一利率下获取每月明细
-    interestPerMonthList (params) {
+    interestPerMonthList(params) {
         var result = this.base(Object.assign({}, this.params, params))
 
         let monthList = [] // 还款明细
@@ -141,8 +141,8 @@ export default class MortgageCalculator {
     }
 
     // 本金均摊 - 单一利率下获取每月明细
-    capitalPerMonthList (params) {
-        var result = this.base(Object.assign({}, this.params, params, {type: 2}))
+    capitalPerMonthList(params) {
+        var result = this.base(Object.assign({}, this.params, params, { type: 2 }))
 
         let monthList = [] // 还款明细
 
@@ -172,7 +172,7 @@ export default class MortgageCalculator {
     }
 
     // 多段利率 - 本息
-    interestMulti (params) {
+    interestMulti(params) {
         let that = this
 
         that.params = Object.assign({}, that.params, params)
@@ -236,7 +236,7 @@ export default class MortgageCalculator {
     }
 
     // 多段利率 - 本金均摊
-    capitalMulti (params) {
+    capitalMulti(params) {
         let that = this
 
         this.params = Object.assign({}, this.params, params)
@@ -291,7 +291,7 @@ export default class MortgageCalculator {
     /**
      * 验证多段利率下，每段时间与总贷款时间是否一致
      */
-    verifyParams () {
+    verifyParams() {
         let totalMonth = 0
         this.params.segment.forEach((item) => {
             totalMonth += item.end - item.start + 1
