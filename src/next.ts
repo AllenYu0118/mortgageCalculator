@@ -20,10 +20,14 @@ interface OptionSegment {
 interface MCOptions {
     price: number
     month: number
-    type: number
+    type?: number
     graceMonth: number
     rate: number
-    segment: OptionSegment[]
+    segment?: OptionSegment[]
+}
+
+declare interface ObjectConstructor {
+    assign(target: any, ...sources: any[]): any;
 }
 
 
@@ -89,7 +93,7 @@ class TwMortgageCalculator extends MortgageCalculator {
      * 获取本息均摊的数据
      * @param options Object 参数
      */
-    getInterest(options: MCOptions): ResultData {
+    getInterest(options?: MCOptions): ResultData {
         let { price, graceMonth } = Object.assign({}, this.options, options)
 
         let { monthRate, totalMonth, averageInterest } = this.getParams(options)
@@ -137,7 +141,7 @@ class TwMortgageCalculator extends MortgageCalculator {
      * 获取本金均摊的数据
      * @param options Object 参数
      */
-    getCapital(options: MCOptions): ResultData {
+    getCapital(options?: MCOptions): ResultData {
         let { price, graceMonth } = Object.assign({}, this.options, options)
 
         let { monthRate, totalMonth } = this.getParams(options)
@@ -180,4 +184,212 @@ class TwMortgageCalculator extends MortgageCalculator {
             totalInerestPrice
         }
     }
+
+    // 本息均摊 - 单一利率下获取每月明细
+    interestPerMonthList(options?: MCOptions) {
+        var result = this.getInterest(Object.assign({}, this.options, options))
+
+        let monthList = [] // 还款明细
+
+        var totalCapital = 0
+        for (var i = 1; i <= this.options.month; i++) {
+            var perMonthInterest = (result.price - totalCapital) * result.monthRate // 每月利息
+            var perMonthCapital = result.perMonthPrice - perMonthInterest // 每月本金
+
+            // 寬限期處理
+            if (i <= this.options.graceMonth) {
+                perMonthInterest = result.price * result.monthRate
+                perMonthCapital = 0
+            }
+
+            totalCapital += perMonthCapital
+
+            monthList.push({
+                month: i,
+                interest: perMonthInterest,
+                capital: perMonthCapital,
+                total: perMonthInterest + perMonthCapital
+            })
+        }
+
+        return monthList
+    }
+
+    // 本金均摊 - 单一利率下获取每月明细
+    capitalPerMonthList(options?: MCOptions) {
+        var result = this.getCapital(Object.assign({}, this.options, options))
+
+        let monthList = [] // 还款明细
+
+        var totalCapital = 0
+        for (var i = 1; i <= this.options.month; i++) {
+            var perMonthInterest = (result.price - totalCapital) * result.monthRate // 每月利息
+
+            var perMonthPrice = result.perMonthCapital + perMonthInterest
+
+            // 寬限期處理
+            if (i <= this.options.graceMonth) {
+                perMonthInterest = result.price * result.monthRate
+                perMonthPrice = perMonthInterest
+            }
+
+            totalCapital += (perMonthPrice - perMonthInterest)
+
+            monthList.push({
+                month: i,
+                interest: perMonthInterest,
+                capital: perMonthPrice - perMonthInterest,
+                total: perMonthPrice
+            })
+        }
+
+        return monthList
+    }
+
+    // 多段利率 - 本息
+    interestMulti(options?: MCOptions) {
+        let that = this
+
+        that.options = Object.assign({}, that.options, options)
+
+        let totalInterest = 0 // 已經支付的利息
+        let totalCapital = 0 // 已經支付的本金
+        let graceMonth = that.options.graceMonth // 寬限期
+        let monthList = [] // 还款明细
+
+        that.options.segment.forEach((item, key) => {
+            // 任何一個值為空,就返回
+            if (!item.start || !item.end || !item.rate) return false
+
+            // 参数配置
+            let options = {
+                rate: item.rate,
+                price: that.options.price - totalCapital, // 剩下的本金
+                month: 0,
+                graceMonth: 0
+            }
+
+            if (key > 0) {
+                options.month = that.options.month - that.options.segment[key - 1].end // 剩下应还款月份
+                options.graceMonth = graceMonth > 0 ? graceMonth : 0
+            }
+
+            if (graceMonth > 0) {
+                graceMonth -= item.end - item.start + 1 // 剩下的寬限期
+            }
+
+            // 获取相对应的段利率的 月利率值
+            let result = that.getInterest(options)
+
+            // 循环计算出某一段内所付的本金之和
+            for (let i = ~~item.start; i <= ~~item.end; i++) {
+                let perMonthInterest = result.monthRate * (that.options.price - totalCapital) // 每月利息
+                let perMonthCapital = result.perMonthPrice - perMonthInterest // 每月本金
+
+                if (i <= that.options.graceMonth) {
+                    // console.log(i, that.params.graceMonth)
+                    perMonthInterest = result.monthRate * result.price // 每月利息
+                    perMonthCapital = 0
+                }
+
+                totalCapital += perMonthCapital // 本金總額
+
+                totalInterest += perMonthInterest // 利息總額
+
+                monthList.push({
+                    month: i,
+                    interest: perMonthInterest,
+                    capital: perMonthCapital,
+                    total: perMonthInterest + perMonthCapital
+                })
+            }
+        })
+
+        return {
+            totalInterest,
+            totalCapital,
+            monthList
+        }
+    }
+
+    // 多段利率 - 本金均摊
+    capitalMulti(options?: MCOptions) {
+        let that = this
+
+        this.options = Object.assign({}, this.options, options)
+
+        let totalInterest = 0 // 已經支付的利息
+        let totalCapital = 0 // 已經支付的本金
+        let monthList = [] // 还款明细
+
+        this.options.segment.forEach((item, key) => {
+            // 任何一個值為空,就返回
+            if (!item.start || !item.end || !item.rate) return false
+
+            // 参数配置
+            let options = {
+                rate: item.rate
+            }
+
+            // 获取相对应的段利率的 月利率值
+            let result = that.getCapital(Object.assign(that.options, options))
+
+            // 循环计算出某一段内所付的本金之和
+            for (let i = ~~item.start; i <= ~~item.end; i++) {
+                let perMonthInterest = result.monthRate * (that.options.price - totalCapital) // 每月利息
+                let perMonthCapital = result.perMonthCapital // 每月本金
+
+                if (i <= that.options.graceMonth) {
+                    perMonthInterest = result.monthRate * result.price // 每月利息
+                    perMonthCapital = 0
+                }
+
+                totalCapital += perMonthCapital // 本金總額
+
+                totalInterest += perMonthInterest // 利息總額
+
+                monthList.push({
+                    month: i,
+                    interest: perMonthInterest,
+                    capital: perMonthCapital,
+                    total: perMonthInterest + perMonthCapital
+                })
+            }
+        })
+
+        return {
+            totalInterest,
+            totalCapital,
+            monthList
+        }
+    }
+
+    /**
+     * 验证多段利率下，每段时间与总贷款时间是否一致
+     */
+    verifyParams() {
+        let totalMonth = 0
+        this.options.segment.forEach((item) => {
+            totalMonth += item.end - item.start + 1
+        })
+
+        return totalMonth === this.options.month
+    }
 }
+
+let twMC = new TwMortgageCalculator({
+    price: 10000000,
+    month: 12 * 30,
+    type: 1,
+    graceMonth: 12,
+    rate: 1.3
+})
+
+console.log('twMC', twMC)
+console.log('本金均摊', twMC.getCapital())
+console.log('本息均摊', twMC.getInterest())
+
+console.log('本息均摊 - 单一利率下获取每月明细', twMC.interestPerMonthList())
+console.log('本金均摊 - 单一利率下获取每月明细', twMC.capitalPerMonthList())
+console.log('多段利率 - 本息', twMC.interestMulti())
+console.log('多段利率 - 本金均摊', twMC.capitalMulti())

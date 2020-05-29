@@ -4,7 +4,7 @@ const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 
 module.exports = {
     mode: 'development',
-    entry: './src/index.js',
+    entry: './src/next.ts',
     output: {
         path: path.resolve(__dirname, './dist'),
         filename: 'index.js',
@@ -14,7 +14,7 @@ module.exports = {
     },
     plugins: [
         new HtmlWebpackPlugin({
-           title: 'Output Management'
+            title: 'Output Management'
         })
     ],
     devtool: '#source-map',
@@ -24,7 +24,17 @@ module.exports = {
                 test: /\.js$/,
                 loader: 'babel-loader',
                 exclude: /(node_modules)/
+            },
+            {
+                test: /\.tsx?$/,
+                use: 'ts-loader',
+                exclude: /node_modules/
             }
         ]
+    },
+    devServer: {
+        contentBase: path.join(__dirname, 'dist'),
+        compress: true,
+        port: 8080
     }
 }
