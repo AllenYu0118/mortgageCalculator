@@ -5,7 +5,7 @@
         "allowJs": true // 允许使用js编码
     },
     "include": [
-        "./src/next.ts"
+        "lib/index.ts"
     ],
     "exclude": [
         "./node_modules" // 不用ts-loader解析的文件路径

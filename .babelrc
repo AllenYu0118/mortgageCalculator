@@ -1,6 +1,26 @@
 {
-  "presets": [
-    ["env"]
-  ],
-  "plugins": ["babel-plugin-transform-object-assign"]
+    "presets": [
+        [
+            "@babel/preset-env",
+            {
+                "targets": {
+                    "chrome": "60"
+                },
+                "corejs": {
+                    "version": 3,
+                    "proposals": true
+                },
+                "useBuiltIns": "usage" // 根据业务来决定把哪些 polyfill 打包
+            }
+        ]
+    ],
+    "plugins": [
+        [
+            "component",
+            {
+                "libraryName": "element-ui",
+                "styleLibraryName": "theme-chalk"
+            }
+        ]
+    ]
 }

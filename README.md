@@ -1,4 +1,4 @@
-## 應用于台灣房貸市場的房貸試算工具
+## 房贷试算
 
 #### 重要概念和字段:
 - 利率类别分为两种:
@@ -16,4 +16,4 @@
 
 
 #### Example
-- https://yuxiaolei1989.github.io/mortgageCalculator/example/index.html 计算结果需要查看开发者工具(`F12`) `Console` 面板 
+- https://yuxiaolei1989.github.io/mortgageCalculator/example/index.html 计算结果需要查看开发者工具(`F12`) `Console` 面板

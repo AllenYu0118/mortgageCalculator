@@ -1,6 +1,6 @@
 new Vue({
     el: '#app',
-    data () {
+    data() {
         return {
             rateType: 1, // 利率方式
             params: {
@@ -19,7 +19,7 @@ new Vue({
     },
 
     methods: {
-        onSubmit () {
+        onSubmit() {
             let params = Object.assign({}, this.params, {
                 price: this.params.price * 10000,
                 month: this.params.year * 12,
@@ -40,7 +40,7 @@ new Vue({
                 console.log(calculator.interestPerMonthList())
             } else {
                 console.group('多段利率')
-                
+
                 console.group('多段利率本息计算结果')
                 console.log(calculator.interestMulti())
 
@@ -50,7 +50,7 @@ new Vue({
 
         },
 
-        reverseMonth (month) {
+        reverseMonth(month) {
             return 30 - month + 1
         }
     }
