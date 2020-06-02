@@ -4,8 +4,10 @@
         "target": "es5", // 最终要转换成es5
         "allowJs": true // 允许使用js编码
     },
+    "baseUrl": "./",
     "include": [
-        "lib/index.ts"
+        "lib/index.ts",
+        "types/*"
     ],
     "exclude": [
         "./node_modules" // 不用ts-loader解析的文件路径

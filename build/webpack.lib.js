@@ -16,6 +16,9 @@ module.exports = {
         library: 'mortgageCalculator'
     },
     devtool: '#source-map',
+    resolve: {
+        extensions: ['.ts', '.js']
+    },
     module: {
         rules: [
             {
