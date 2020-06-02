@@ -6,9 +6,7 @@
     "scripts": {
         "dev": "webpack-dev-server --config ./build/webpack.dev.js",
         "build-lib": "webpack --config ./build/webpack.lib.js",
-        "build": "webpack --config ./build/webpack.build.js",
-        "watch": "webpack --watch",
-        "test": "echo \"Error: no test specified\" && exit 1"
+        "build": "webpack --config ./build/webpack.build.js"
     },
     "keywords": [
         "mortgage",
