@@ -16,4 +16,4 @@
 
 
 #### Example
-- https://yuxiaolei1989.github.io/mortgageCalculator/example/index.html 计算结果需要查看开发者工具(`F12`) `Console` 面板
+- https://yuxiaolei1989.github.io/mortgageCalculator/ 计算结果需要查看开发者工具(`F12`) `Console` 面板
