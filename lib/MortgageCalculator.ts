@@ -7,8 +7,4 @@ export default class MortgageCalculator {
     constructor() {
         this.name = 'MortgageCalculator'
     }
-
-    test() {
-        console.log(this.name)
-    }
 }

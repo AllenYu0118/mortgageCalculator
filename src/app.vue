@@ -5,13 +5,12 @@
         <el-card class="box-card">
             <div slot="header" class="clearfix">
                 <span>台湾版房贷试算器</span>
-                <el-button style="float: right; padding: 3px 0" type="text">操作按钮</el-button>
             </div>
-            <el-row :gutter="20">
-                <el-col :span="16">
+            <el-row>
+                <el-col :span="12">
                     <el-form label-width="80px">
                         <el-form-item label="贷款总额">
-                            <el-input v-model="params.price">
+                            <el-input v-model="params.price" class="input-default">
                                 <template slot="append">万元</template>
                             </el-input>
                         </el-form-item>
@@ -46,43 +45,32 @@
                         </el-form-item>
 
                         <el-form-item label="年利率" v-if="rateType === 1">
-                            <el-input v-model="params.rate"></el-input>
+                            <el-input v-model="params.rate" class="input-default"></el-input>
                         </el-form-item>
 
                         <template v-if="rateType === 2">
                             <el-form-item v-for="(item, key) in params.segment"
                             :label="`第${key + 1}段利率`" :key="key">
-                                <el-row>
-                                    <el-col :span="6">
-                                        <el-input v-model="item.start">
-                                            <span slot="append">月</span>
-                                        </el-input>
-                                    </el-col>
-                                    <el-col :span="1" style="text-align:center;">
-                                        ~
-                                    </el-col>
-                                    <el-col :span="6">
-                                        <el-input v-model="item.end">
-                                            <span slot="append">月</span>
-                                        </el-input>
-                                    </el-col>
-                                    <el-col :span="6" :offset="1">
-                                        <el-input v-model="item.rate">
-                                            <span slot="append">%</span>
-                                        </el-input>
-                                    </el-col>
-                                    <el-col :span="5"></el-col>
-                                </el-row>
+                                <el-input v-model="item.start" class="input-short">
+                                    <span slot="append">月</span>
+                                </el-input>
+                                ~
+                                <el-input v-model="item.end" class="input-short">
+                                    <span slot="append">月</span>
+                                </el-input>
+
+                                <el-input v-model="item.rate" class="input-short">
+                                    <span slot="append">%</span>
+                                </el-input>
                             </el-form-item>
                         </template>
-
 
                         <el-form-item>
                             <el-button type="primary" @click="onSubmit">开始计算</el-button>
                         </el-form-item>
                     </el-form>
                 </el-col>
-                <el-col :span="8">
+                <el-col :span="12">
 
                 </el-col>
             </el-row>
@@ -123,27 +111,26 @@ export default {
 
             if (this.rateType === 1) {
                 console.group('单一利率')
-
                     console.group('单一利率计算结果')
-                    console.log(calculator.getInterest())
+                        console.log(calculator.getInterest())
                     console.groupEnd()
 
                     console.group('单一利率本息每月明细')
-                    console.log(calculator.interestPerMonthList())
+                        console.log(calculator.interestPerMonthList())
                     console.groupEnd()
 
                     console.group('单一利率本金每月明细')
-                    console.log(calculator.capitalPerMonthList())
+                        console.log(calculator.capitalPerMonthList())
                     console.groupEnd()
                 console.groupEnd()
             } else {
                 console.group('多段利率')
                     console.group('多段利率本息计算结果')
-                    console.log(calculator.interestMulti())
+                        console.log(calculator.interestMulti())
                     console.groupEnd()
 
                     console.group('多段利率本金计算结果')
-                    console.log(calculator.capitalMulti())
+                        console.log(calculator.capitalMulti())
                     console.groupEnd()
                 console.groupEnd()
             }
@@ -158,5 +145,11 @@ export default {
 </script>
 
 <style lang="less" scoped>
+.input-default {
+    width: 193px;
+}
 
+.input-short {
+    width: 120px;
+}
 </style>

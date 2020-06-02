@@ -41,6 +41,14 @@ module.exports = {
                 ]
             },
             {
+                test: /\.less$/,
+                use: [
+                    'style-loader', // 把样式挂载到head里
+                    'css-loader', // 分析 css 中的关系
+                    'less-loader'
+                ]
+            },
+            {
                 test: /\.(eot|woff2?|ttf|svg)$/,
                 use: [
                     {
