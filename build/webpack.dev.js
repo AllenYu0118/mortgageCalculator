@@ -8,6 +8,11 @@ module.exports = () => {
         mode: 'development',
         devServer: {
             contentBase: path.resolve(__dirname, '../src'),
-        }
+        },
+        resolve: {
+            alias: {
+                'vue$': 'vue/dist/vue.esm.js'
+            }
+        },
     })
 }

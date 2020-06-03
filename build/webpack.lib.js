@@ -4,10 +4,9 @@
 * @dateTime:    2020-06-01 11:27:34
 */
 const path = require('path')
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 
 module.exports = {
-    mode: 'development',
+    mode: 'production',
     entry: './lib/index.ts',
     output: {
         path: path.resolve(__dirname, '../es'),
@@ -27,8 +26,5 @@ module.exports = {
                 exclude: /node_modules/
             }
         ]
-    },
-    plugins: [
-        new UglifyJsPlugin()
-    ]
+    }
 }

@@ -1,6 +1,5 @@
 const path = require('path')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 const VueLoaderPlugin = require('vue-loader/lib/plugin');
 
 module.exports = {
@@ -9,16 +8,7 @@ module.exports = {
         path: path.resolve(__dirname, '../dist'),
         filename: "js/[name].js"
     },
-    plugins: [
-        new HtmlWebpackPlugin({
-            title: '房贷试算器 - TypeScript 版',
-            template: path.resolve(__dirname, '../src/index.html')
-        }),
 
-        // new UglifyJsPlugin(),
-
-        new VueLoaderPlugin()
-    ],
     devtool: '#source-map',
     module: {
         rules: [
@@ -57,5 +47,14 @@ module.exports = {
                 ]
             }
         ]
-    }
+    },
+
+    plugins: [
+        new HtmlWebpackPlugin({
+            title: '房贷试算器 - TypeScript 版',
+            template: path.resolve(__dirname, '../src/index.html')
+        }),
+
+        new VueLoaderPlugin()
+    ],
 }
